@@ -6,6 +6,12 @@ local screenHeight = game:GetService("GuiService").AbsoluteWindowSize.Y
 
 Window.Position = UDim2.new(0.5, -(Window.AbsoluteSize.X / 2), 0.5, -(Window.AbsoluteSize.Y / 2))
 
+-- Création de la barre en haut de la fenêtre
+local TopBar = Instance.new("Frame")
+TopBar.Size = UDim2.new(1, 0, 0, 30)  -- Taille de la barre
+TopBar.BackgroundColor3 = Color3.new(0, 0, 0)  -- Couleur de la barre
+TopBar.Parent = Window  -- Parent de la barre
+
 local Tab = Window:NewTab("vie en prison à la bibliothèque")
 local Section = Tab:NewSection("Script de vie en prison sans clé")
 
@@ -28,7 +34,7 @@ closeButton.Text = "X"
 closeButton.TextColor3 = Color3.new(1, 1, 1)
 closeButton.BackgroundColor3 = Color3.new(1, 0, 0)
 closeButton.BorderSizePixel = 0
-closeButton.Parent = Window
+closeButton.Parent = TopBar  -- Bouton de fermeture attaché à la barre
 
 closeButton.MouseButton1Click:Connect(closeWindow)
 
@@ -48,7 +54,7 @@ local function updateDrag(input)
     updateWindowPosition((startPos.X.Offset + delta.X) / screenWidth, (startPos.Y.Offset + delta.Y) / screenHeight)
 end
 
-Window.TopBar.InputBegan:Connect(function(input)
+TopBar.InputBegan:Connect(function(input)
     if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
         dragStart = input.Position
         startPos = Window.Position
@@ -60,7 +66,7 @@ Window.TopBar.InputBegan:Connect(function(input)
     end
 end)
 
-Window.TopBar.InputChanged:Connect(function(input)
+TopBar.InputChanged:Connect(function(input)
     if input.UserInputType == Enum.UserInputType.MouseMovement or input.UserInputType == Enum.UserInputType.Touch then
         dragInput = input
     end
