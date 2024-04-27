@@ -9,7 +9,7 @@ Window.Position = UDim2.new(0.5, -(Window.AbsoluteSize.X / 2), 0.5, -(Window.Abs
 local Tab = Window:NewTab("vie en prison à la bibliothèque")
 local Section = Tab:NewSection("Script de vie en prison sans clé")
 
-Section:NewButton("Tiger Admin", "BoutonInfo", function()
+Section:NewButton("Tiger Admin", "ButtonInfo", function()
     loadstring(game:HttpGet("https://scriptblox.com/raw/Prison-Life-Tiger-admin-free-10333"))()
 end)
 
