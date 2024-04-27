@@ -63,15 +63,6 @@ GunSection:NewDropdown("Gun Mod", "Rend le pistolet vraiment maîtrisé.", {"M9"
     end
 end)
 
-GunSection:NewButton("Aimbot", "Joli aimbot universel.", function()
-    local deltaX = nil
-    local deltaY = nil
-    local aimDeltaX = nil
-    local aimDeltaY = nil
-    local gameAimButton = nil
-    loadstring(game:HttpGet("https://pastebin.com/raw/w2S8YyDt", true))()
-end)
-
 TeamSection:NewButton("Passer à l'équipe des détenus", "Passer à l'équipe des détenus.", function()
     local args = {
         [1] = "Orange vif"
