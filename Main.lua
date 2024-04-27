@@ -1,10 +1,9 @@
 local Library = loadstring(game:HttpGet("https://raw.githubusercontent.com/xHeptc/Kavo-UI-Library/main/source.lua"))()
 local Window = Library.CreateLib("Sce Prison Hub", "DarkTheme")
-local Tab = Window:NewTab("library prison life")
-local Section = Tab:NewSection("Prison Life script no key")
+local Tab = Window:NewTab("vie en prison à la bibliothèque")
+local Section = Tab:NewSection("Script de vie en prison sans clé")
 
-Section:NewButton("Tiger Admin", "ButtonInfo", 
-function()
+Section:NewButton("Tiger Admin", "BoutonInfo", function()
     loadstring(game:HttpGet("https://scriptblox.com/raw/Prison-Life-Tiger-admin-free-10333"))()
 end)
 
@@ -16,7 +15,16 @@ local function closeWindow()
     Window:Close()
 end
 
-Section:NewButton("Fermer", "ButtonInfo", closeWindow)
+local closeButton = Instance.new("TextButton")
+closeButton.Size = UDim2.new(0, 20, 0, 20)
+closeButton.Position = UDim2.new(0, 10, 0, 10)
+closeButton.Text = "X"
+closeButton.TextColor3 = Color3.new(1, 1, 1)
+closeButton.BackgroundColor3 = Color3.new(1, 0, 0)
+closeButton.BorderSizePixel = 0
+closeButton.Parent = Window
+
+closeButton.MouseButton1Click:Connect(closeWindow)
 
 local function updateWindowPosition(x, y)
     local screenWidth = game:GetService("GuiService").AbsoluteWindowSize.X
@@ -67,3 +75,37 @@ game:GetService("UserInputService").InputEnded:Connect(function(input)
         updateWindowPosition(0, 0)
     end
 end)
+
+local JoystickWindow = Library.CreateLib("Joystick", "DarkTheme")
+JoystickWindow:SetTitle("Joystick")
+JoystickWindow:SetPosition(UDim2.new(0, 10, 0, 10))
+JoystickWindow:SetSize(UDim2.new(0, 150, 0, 150))
+JoystickWindow:MakeDraggable()
+
+local function updateMainWindowPosition(x, y)
+    local screenWidth = game:GetService("GuiService").AbsoluteWindowSize.X
+    local screenHeight = game:GetService("GuiService").AbsoluteWindowSize.Y
+    
+    Window.Position = UDim2.new(x, 0, y, 0)
+end
+
+local joystickButtonJoystickWindow = Instance.new("TextButton")
+joystickButtonJoystickWindow.Size = UDim2.new(0, 50, 0, 50)
+joystickButtonJoystickWindow.Position = UDim2.new(0.5, -25, 0.5, -25)
+joystickButtonJoystickWindow.Text = ""
+joystickButtonJoystickWindow.Parent = JoystickWindow
+
+local joystickDraggingJoystickWindow = false
+
+joystickButtonJoystickWindow.MouseButton1Down:Connect(function()
+    joystickDraggingJoystickWindow = true
+end)
+
+game:GetService("UserInputService").InputChanged:Connect(function(input)
+    if joystickDraggingJoystickWindow and input.UserInputType == Enum.UserInputType.MouseMovement then
+        local center = joystickButtonJoystickWindow.AbsolutePosition + joystickButtonJoystickWindow.AbsoluteSize / 2
+        local cursorPosition = input.Position
+        local relativePosition = cursorPosition - center
+        local distance = relativePosition.magnitude
+        local maxDistance = joystickButtonJoystickWindow.AbsoluteSize.X / 2
+        if distance >
