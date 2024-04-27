@@ -1,14 +1,18 @@
-4)
-TEMP_CMD.Font = Enum.Font.SourceSans
-TEMP_CMD.Text = "sexe"
-TEMP_CMD.TextColor3 = Color3.fromRGB(255, 255, 255if not getconnections or not hookmetamethod or not getnamecallmethod or not ((getgenv and getgenv()) or _G) then
-	game:GetService("StarterGui"):SetCore("SendNotification", {Title = "Tiger Admin",Text = "L'exécuteur n'est pas pris en charge !",Duration = 10,})
+if not getconnections or not hookmetamethod or not getnamecallmethod or not ((getgenv and getgenv()) or _G) then
+	game:GetService("StarterGui"):SetCore("SendNotification", {Title = "Sce Hub",Text = "L'exécuteur n'est pas pris en charge !",Duration = 10,})
 end
+
 if not workspace:FindFirstChild("Criminals Spawn") or not workspace:FindFirstChild("Criminals Spawn"):FindFirstChild("SpawnLocation") then
-	game:GetService("StarterGui"):SetCore("SendNotification", {Title = "Tiger Admin",Text = "Les criminels ne sont pas trouvés ! Veuillez vous réinscrire.",Duration = 10,})
+	game:GetService("StarterGui"):SetCore("SendNotification", {Title = "Sce Hub",Text = "Les criminels ne sont pas trouvés ! Veuillez vous réinscrire.",Duration = 10,})
 end
+
 game:GetService("Players").LocalPlayer.Character:WaitForChild("HumanoidRootPart")
-if game:FindFirstChild("Tiger_revamp_loaded") then ((getgenv and getgenv()) or _G).NotifTiger("L'administrateur Tiger est déjà exécuté !",false) return warn("Déjà chargé") end
+
+if game:FindFirstChild("Sce_revamp_loaded") then 
+	((getgenv and getgenv()) or _G).NotifTiger("L'administrateur Sce est déjà exécuté !",false) 
+	return warn("Déjà chargé") 
+end
+
 local Player, plr, Folder = game:GetService("Players").LocalPlayer, game:GetService("Players").LocalPlayer, Instance.new("Folder", game)
 local OldHook, hookmeta, getnamecallmethod = nil, hookmetamethod, getnamecallmethod
 local HasGamepass, UserInputService = game:GetService("MarketplaceService"):UserOwnsGamePassAsync(Player.UserId, 96651), game:GetService("UserInputService")
@@ -23,7 +27,7 @@ local API = {}
 local Reload_Guns = {}
 local Prefix = "!"
 
-Folder.Name = "Tiger_revamp_loaded"
+Folder.Name = "Sce_revamp_loaded"
 local ScreenGui = Instance.new("ScreenGui")
 local CmdBarFrame = Instance.new("Frame")
 local UICorner = Instance.new("UICorner")
@@ -41,7 +45,7 @@ local SearchBar = Instance.new("TextBox")
 
 ScreenGui.Parent = (game:GetService("CoreGui") or gethui())
 ScreenGui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
-ScreenGui.Name = math.random()
+ScreenGui.Name = tostring(math.random())
 
 CmdBarFrame.Name = "CmdBarFrame"
 CmdBarFrame.Parent = ScreenGui
@@ -119,4 +123,4 @@ TEMP_CMD.BackgroundTransparency = 0.750
 TEMP_CMD.Size = UDim2.new(0, 455, 0, 14)
 TEMP_CMD.Font = Enum.Font.SourceSans
 TEMP_CMD.Text = "sexe"
-TEMP_CMD.TextColor3 = Color3.fromRGB(255, 0, 0) -- Rouge
+TEMP_CMD.TextColor3 = Color3.fromRGB(255, 0, 0) 
