@@ -1,108 +1,122 @@
-local Library = loadstring(game:HttpGet("https://raw.githubusercontent.com/xHeptc/Kavo-UI-Library/main/source.lua"))()
-local ScePrisonHub = Library.CreateLib("Sce Prison Hub", "BloodTheme")
-local Principal = ScePrisonHub:NewTab("Principal")
-local Scripts = ScePrisonHub:NewTab("Scripts")
-local PlayerSection = Principal:NewSection("Joueur")
-local GunSection = Principal:NewSection("Armes")
-local TeamSection = Principal:NewSection("Équipe")
-local AdminSection = Scripts:NewSection("Scripts d'administration")
-local UsefulSection = Scripts:NewSection("Scripts utiles")
+4)
+TEMP_CMD.Font = Enum.Font.SourceSans
+TEMP_CMD.Text = "sexe"
+TEMP_CMD.TextColor3 = Color3.fromRGB(255, 255, 255if not getconnections or not hookmetamethod or not getnamecallmethod or not ((getgenv and getgenv()) or _G) then
+	game:GetService("StarterGui"):SetCore("SendNotification", {Title = "Tiger Admin",Text = "L'exécuteur n'est pas pris en charge !",Duration = 10,})
+end
+if not workspace:FindFirstChild("Criminals Spawn") or not workspace:FindFirstChild("Criminals Spawn"):FindFirstChild("SpawnLocation") then
+	game:GetService("StarterGui"):SetCore("SendNotification", {Title = "Tiger Admin",Text = "Les criminels ne sont pas trouvés ! Veuillez vous réinscrire.",Duration = 10,})
+end
+game:GetService("Players").LocalPlayer.Character:WaitForChild("HumanoidRootPart")
+if game:FindFirstChild("Tiger_revamp_loaded") then ((getgenv and getgenv()) or _G).NotifTiger("L'administrateur Tiger est déjà exécuté !",false) return warn("Déjà chargé") end
+local Player, plr, Folder = game:GetService("Players").LocalPlayer, game:GetService("Players").LocalPlayer, Instance.new("Folder", game)
+local OldHook, hookmeta, getnamecallmethod = nil, hookmetamethod, getnamecallmethod
+local HasGamepass, UserInputService = game:GetService("MarketplaceService"):UserOwnsGamePassAsync(Player.UserId, 96651), game:GetService("UserInputService")
+local GlobalVar = ((getgenv and getgenv()) or _G)
+local unloaded = false
+local CriminalCFRAME = workspace["Criminals Spawn"].SpawnLocation.CFrame
+local API_Prem = loadstring(game:HttpGet("https://raw.githubusercontent.com/dalloc2/Roblox/main/Listing.lua"))()
+local PremiumActivated = API_Prem.CheckPremium()
 
-PlayerSection:NewSlider("Walkspeed", "Modifie votre vitesse de marche.", 200, 16, function(s)
-    game.Players.LocalPlayer.Character.Humanoid.WalkSpeed = s
-end)
-PlayerSection:NewSlider("Jump Power", "Modifie votre Jumppower.", 200, 50, function(s)
-    game.Players.LocalPlayer.Character.Humanoid.JumpPower = s
-end)
+local Temp = {}
+local API = {}
+local Reload_Guns = {}
+local Prefix = "!"
 
-GunSection:NewButton("Obtenez un fusil de chasse", "Obtenez l'arme Remington 870 dans votre inventaire.", function()
-    local args = {
-        [1] = workspace.Prison_ITEMS.giver:FindFirstChild("Remington 870").ITEMPICKUP
-    }
-    workspace.Remote.ItemHandler:InvokeServer(unpack(args))
-end)
+Folder.Name = "Tiger_revamp_loaded"
+local ScreenGui = Instance.new("ScreenGui")
+local CmdBarFrame = Instance.new("Frame")
+local UICorner = Instance.new("UICorner")
+local Out = Instance.new("ImageLabel")
+local UICorner_2 = Instance.new("UICorner")
+local CommandBar = Instance.new("TextBox")
+local UIStroke = Instance.new("UIStroke")
+local Commands = Instance.new("ImageLabel")
+local UICorner_3 = Instance.new("UICorner")
+local UIStroke_2 = Instance.new("UIStroke")
+local CommandsList = Instance.new("ScrollingFrame")
+local UIListLayout = Instance.new("UIListLayout")
+local TEMP_CMD = Instance.new("TextLabel")
+local SearchBar = Instance.new("TextBox")
 
-GunSection:NewButton("Obtenir un pistolet", "Obtenir l'arme M9 dans votre inventaire.", function()
-    local args = {
-        [1] = workspace.Prison_ITEMS.giver.M9.ITEMPICKUP
-    }
-    workspace.Remote.ItemHandler:InvokeServer(unpack(args))
-end)
+ScreenGui.Parent = (game:GetService("CoreGui") or gethui())
+ScreenGui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
+ScreenGui.Name = math.random()
 
-GunSection:NewButton("Obtenez l'Ak-47", "Obtenez l'arme Ak-47 dans votre inventaire.", function()
-    local args = {
-        [1] = workspace.Prison_ITEMS.giver:FindFirstChild("AK-47").ITEMPICKUP
-    }
-    workspace.Remote.ItemHandler:InvokeServer(unpack(args))
-end)
+CmdBarFrame.Name = "CmdBarFrame"
+CmdBarFrame.Parent = ScreenGui
+CmdBarFrame.AnchorPoint = Vector2.new(0.5, 0.5)
+CmdBarFrame.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+CmdBarFrame.BackgroundTransparency = 1.000
+CmdBarFrame.BorderSizePixel = 0
+CmdBarFrame.Position = UDim2.new(0.5, 0, 0.9, 0)
+CmdBarFrame.Position = CmdBarFrame.Position + UDim2.new(0,0,1.1,0)
+CmdBarFrame.Size = UDim2.new(0, 577, 0, 65)
 
-GunSection:NewButton("Obtenez M4A1", "Vous avez besoin du gamepass Riot Police.", function()
-    local args = {
-        [1] = workspace.Prison_ITEMS.giver.M4A1.ITEMPICKUP
-    }
-    workspace.Remote.ItemHandler:InvokeServer(unpack(args))
-end)
+UICorner.CornerRadius = UDim.new(0, 3)
+UICorner.Parent = CmdBarFrame
 
-GunSection:NewDropdown("Gun Mod", "Rend le pistolet vraiment maîtrisé.", {"M9", "Remington 870", "AK-47", "Taser"}, function(v)
-    local module = nil
-    if game:GetService("Players").LocalPlayer.Backpack:FindFirstChild(v) then
-        module = require(game:GetService("Players").LocalPlayer.Backpack[v].GunStates)
-    elseif game:GetService("Players").LocalPlayer.Character:FindFirstChild(v) then
-        module = require(game:GetService("Players").LocalPlayer.Character[v].GunStates)
-    end
-    if module then
-        module["MaxAmmo"] = math.huge
-        module["CurrentAmmo"] = math.huge
-        module["StoredAmmo"] = math.huge
-        module["FireRate"] = 0.000001
-        module["Spread"] = 0
-        module["Range"] = math.huge
-        module["Bullets"] = 10
-        module["ReloadTime"] = 0.000001
-        module["AutoFire"] = true
-    end
-end)
+Out.Name = "Out"
+Out.Parent = CmdBarFrame
+Out.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
+Out.Position = UDim2.new(0.02, 0, 0.02, 0)
+Out.Size = UDim2.new(0.974, 0, 0.945, 0)
+Out.Image = "rbxassetid://11789397066"
+Out.ImageTransparency = 0.240
 
-TeamSection:NewButton("Passer à l'équipe des détenus", "Passer à l'équipe des détenus.", function()
-    local args = {
-        [1] = "Orange vif"
-    }
-    workspace.Remote.TeamEvent:FireServer(unpack(args))
-    args[1] = PlayerName
-    workspace.Remote.loadchar:InvokeServer(unpack(args))
-end)
+UICorner_2.CornerRadius = UDim.new(0, 6)
+UICorner_2.Parent = Out
 
-TeamSection:NewButton("Passer à l'équipe des gardes", "Passer à l'équipe des gardes.", function()
-    local args = {
-        [1] = "Bleu vif"
-    }
-    workspace.Remote.TeamEvent:FireServer(unpack(args))
-    args[1] = PlayerName
-    workspace.Remote.loadchar:InvokeServer(unpack(args))
-end)
+CommandBar.Name = "CommandBar"
+CommandBar.Parent = Out
+CommandBar.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+CommandBar.BackgroundTransparency = 1.000
+CommandBar.BorderSizePixel = 0
+CommandBar.Position = UDim2.new(0.036, 0, 0.128, 0)
+CommandBar.Size = UDim2.new(0, 519, 0, 46)
+CommandBar.Font = Enum.Font.SourceSans
+CommandBar.PlaceholderColor3 = Color3.fromRGB(178, 178, 178)
+CommandBar.PlaceholderText = "Barre de commandes"
+CommandBar.Text = ""
+CommandBar.TextColor3 = Color3.fromRGB(255, 255, 255)
+CommandBar.TextSize = 24
+CommandBar.TextTransparency = 0.140
+CommandBar.TextWrapped = true
 
-TeamSection:NewButton("Passer à l'équipe neutre", "Passer à l'équipe neutre.", function()
-    local args = {
-        [1] = game:GetService("Players").LocalPlayer,
-        [2] = "Gris pierre moyen"
-    }
-    workspace.Remote.loadchar:InvokeServer(unpack(args))
-    args[1] = PlayerName
-    workspace.Remote.loadchar:InvokeServer(unpack(args))
-end)
+UIStroke.Parent = Out
 
-AdminSection:NewButton("Inf Yield", "Script d'administration Nice FE.", function()
-    loadstring(game:HttpGet('https://raw.githubusercontent.com/EdgeIY/infiniteyield/master/source'))()
-end)
+Commands.Name = "Commands"
+Commands.Parent = ScreenGui
+Commands.AnchorPoint = Vector2.new(0.5, 0.5)
+Commands.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
+Commands.Position = UDim2.new(0.5, 0, 0.5, 0)
+Commands.Size = UDim2.new(0, 455, 0, 297)
+Commands.Image = "rbxassetid://12011977394"
+Commands.ImageTransparency = 0.200
+Commands.Visible = false
 
-AdminSection:NewButton("Fates Admin", "L'un des meilleurs scripts d'administration FE.", function()
-    loadstring(game:HttpGet("https://raw.githubusercontent.com/fatesc/fates-admin/main/main.lua"))()
-end)
+UICorner_3.CornerRadius = UDim.new(0, 6)
+UICorner_3.Parent = Commands
 
-UsefulSection:NewButton("DarkDex", "Vous permet de tout voir dans le jeu.", function()
-    loadstring(game:HttpGet("https://gist.githubusercontent.com/DinosaurXxX/b757fe011e7e600c0873f967fe427dc2/raw/ee5324771f017073fc30e640323ac2a9b3bfc550/dark%2520dex%2520v4"))()
-end)
+UIStroke_2.Parent = Commands
 
-UsefulSection:NewButton("SimpleSpy", "Un incontournable pour créer des exploits Roblox.", function()
-    loadstring(game:HttpGet("https://github.com/exxtremestuffs/SimpleSpySource/raw/master/SimpleSpy.lua"))()
-end)
+CommandsList.Parent = Commands
+CommandsList.Active = true
+CommandsList.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+CommandsList.BackgroundTransparency = 1.000
+CommandsList.Position = UDim2.new(0, 0, 0.077, 0)
+CommandsList.Size = UDim2.new(0, 455, 0, 274)
+CommandsList.ScrollBarThickness = 5
+CommandsList.AutomaticCanvasSize = "Y"
+
+UIListLayout.Parent = CommandsList
+UIListLayout.SortOrder = Enum.SortOrder.LayoutOrder
+UIListLayout.Padding = UDim.new(0, 8)
+
+TEMP_CMD.Parent = Folder
+TEMP_CMD.BackgroundColor3 = Color3.fromRGB(62, 62, 62)
+TEMP_CMD.BackgroundTransparency = 0.750
+TEMP_CMD.Size = UDim2.new(0, 455, 0, 14)
+TEMP_CMD.Font = Enum.Font.SourceSans
+TEMP_CMD.Text = "sexe"
+TEMP_CMD.TextColor3 = Color3.fromRGB(255, 0, 0) -- Rouge
