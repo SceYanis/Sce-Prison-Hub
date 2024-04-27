@@ -1,79 +1,117 @@
 local Library = loadstring(game:HttpGet("https://raw.githubusercontent.com/xHeptc/Kavo-UI-Library/main/source.lua"))()
-local Window = Library.CreateLib("Sce Prison Hub", "DarkTheme")
+local ScePrisonHub = Library.CreateLib("Sce Prison Hub", "BloodTheme")
+local Principal = ScePrisonHub:NewTab("Principal")
+local Scripts = ScePrisonHub:NewTab("Scripts")
+local PlayerSection = Principal:NewSection("Joueur")
+local GunSection = Principal:NewSection("Armes")
+local TeamSection = Principal:NewSection("Équipe")
+local AdminSection = Scripts:NewSection("Scripts d'administration")
+local UsefulSection = Scripts:NewSection("Scripts utiles")
 
-local screenWidth = game:GetService("GuiService").AbsoluteWindowSize.X
-local screenHeight = game:GetService("GuiService").AbsoluteWindowSize.Y
-
-Window.Position = UDim2.new(0.5, -(Window.AbsoluteSize.X / 2), 0.5, -(Window.AbsoluteSize.Y / 2))
-
--- Création de la barre en haut de la fenêtre
-local TopBar = Instance.new("Frame")
-TopBar.Size = UDim2.new(1, 0, 0, 30)  -- Taille de la barre
-TopBar.BackgroundColor3 = Color3.new(0, 0, 0)  -- Couleur de la barre
-TopBar.Parent = Window  -- Parent de la barre
-
-local Tab = Window:NewTab("vie en prison à la bibliothèque")
-local Section = Tab:NewSection("Script de vie en prison sans clé")
-
-Section:NewButton("Tiger Admin", "ButtonInfo", function()
-    loadstring(game:HttpGet("https://scriptblox.com/raw/Prison-Life-Tiger-admin-free-10333"))()
+PlayerSection:NewSlider("Walkspeed", "Modifie votre vitesse de marche.", 200, 16, function(s)
+    game.Players.LocalPlayer.Character.Humanoid.WalkSpeed = s
+end)
+PlayerSection:NewSlider("Jump Power", "Modifie votre Jumppower.", 200, 50, function(s)
+    game.Players.LocalPlayer.Character.Humanoid.JumpPower = s
 end)
 
-Section:NewButton("Prisonware", "ButtonInfo", function()
-    loadstring(game:HttpGet("https://raw.githubusercontent.com/Denverrz/scripts/master/PRISONWARE_v1.3.txt"))()
+GunSection:NewButton("Obtenez un fusil de chasse", "Obtenez l'arme Remington 870 dans votre inventaire.", function()
+    local args = {
+        [1] = workspace.Prison_ITEMS.giver:FindFirstChild("Remington 870").ITEMPICKUP
+    }
+    workspace.Remote.ItemHandler:InvokeServer(unpack(args))
 end)
 
-local function closeWindow()
-    Window:Close()
-end
+GunSection:NewButton("Obtenir un pistolet", "Obtenir l'arme M9 dans votre inventaire.", function()
+    local args = {
+        [1] = workspace.Prison_ITEMS.giver.M9.ITEMPICKUP
+    }
+    workspace.Remote.ItemHandler:InvokeServer(unpack(args))
+end)
 
-local closeButton = Instance.new("TextButton")
-closeButton.Size = UDim2.new(0, 20, 0, 20)
-closeButton.Position = UDim2.new(0, 10, 0, 10)
-closeButton.Text = "X"
-closeButton.TextColor3 = Color3.new(1, 1, 1)
-closeButton.BackgroundColor3 = Color3.new(1, 0, 0)
-closeButton.BorderSizePixel = 0
-closeButton.Parent = TopBar  -- Bouton de fermeture attaché à la barre
+GunSection:NewButton("Obtenez l'Ak-47", "Obtenez l'arme Ak-47 dans votre inventaire.", function()
+    local args = {
+        [1] = workspace.Prison_ITEMS.giver:FindFirstChild("AK-47").ITEMPICKUP
+    }
+    workspace.Remote.ItemHandler:InvokeServer(unpack(args))
+end)
 
-closeButton.MouseButton1Click:Connect(closeWindow)
+GunSection:NewButton("Obtenez M4A1", "Vous avez besoin du gamepass Riot Police.", function()
+    local args = {
+        [1] = workspace.Prison_ITEMS.giver.M4A1.ITEMPICKUP
+    }
+    workspace.Remote.ItemHandler:InvokeServer(unpack(args))
+end)
 
-local dragInput
-local dragStart
-local startPos
-
-local function updateWindowPosition(x, y)
-    local screenWidth = game:GetService("GuiService").AbsoluteWindowSize.X
-    local screenHeight = game:GetService("GuiService").AbsoluteWindowSize.Y
-    
-    Window.Position = UDim2.new(0, x * screenWidth, 0, y * screenHeight)
-end
-
-local function updateDrag(input)
-    local delta = input.Position - dragStart
-    updateWindowPosition((startPos.X.Offset + delta.X) / screenWidth, (startPos.Y.Offset + delta.Y) / screenHeight)
-end
-
-TopBar.InputBegan:Connect(function(input)
-    if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
-        dragStart = input.Position
-        startPos = Window.Position
-        input.Changed:Connect(function()
-            if input.UserInputState == Enum.UserInputState.End then
-                dragInput = nil
-            end
-        end)
+GunSection:NewDropdown("Gun Mod", "Rend le pistolet vraiment maîtrisé.", {"M9", "Remington 870", "AK-47", "Taser"}, function(v)
+    local module = nil
+    if game:GetService("Players").LocalPlayer.Backpack:FindFirstChild(v) then
+        module = require(game:GetService("Players").LocalPlayer.Backpack[v].GunStates)
+    elseif game:GetService("Players").LocalPlayer.Character:FindFirstChild(v) then
+        module = require(game:GetService("Players").LocalPlayer.Character[v].GunStates)
+    end
+    if module then
+        module["MaxAmmo"] = math.huge
+        module["CurrentAmmo"] = math.huge
+        module["StoredAmmo"] = math.huge
+        module["FireRate"] = 0.000001
+        module["Spread"] = 0
+        module["Range"] = math.huge
+        module["Bullets"] = 10
+        module["ReloadTime"] = 0.000001
+        module["AutoFire"] = true
     end
 end)
 
-TopBar.InputChanged:Connect(function(input)
-    if input.UserInputType == Enum.UserInputType.MouseMovement or input.UserInputType == Enum.UserInputType.Touch then
-        dragInput = input
-    end
+GunSection:NewButton("Aimbot", "Joli aimbot universel.", function()
+    local deltaX = nil
+    local deltaY = nil
+    local aimDeltaX = nil
+    local aimDeltaY = nil
+    local gameAimButton = nil
+    loadstring(game:HttpGet("https://pastebin.com/raw/w2S8YyDt", true))()
 end)
 
-game:GetService("UserInputService").InputChanged:Connect(function(input)
-    if dragInput and input == dragInput then
-        updateDrag(input)
-    end
+TeamSection:NewButton("Passer à l'équipe des détenus", "Passer à l'équipe des détenus.", function()
+    local args = {
+        [1] = "Orange vif"
+    }
+    workspace.Remote.TeamEvent:FireServer(unpack(args))
+    args[1] = PlayerName
+    workspace.Remote.loadchar:InvokeServer(unpack(args))
+end)
+
+TeamSection:NewButton("Passer à l'équipe des gardes", "Passer à l'équipe des gardes.", function()
+    local args = {
+        [1] = "Bleu vif"
+    }
+    workspace.Remote.TeamEvent:FireServer(unpack(args))
+    args[1] = PlayerName
+    workspace.Remote.loadchar:InvokeServer(unpack(args))
+end)
+
+TeamSection:NewButton("Passer à l'équipe neutre", "Passer à l'équipe neutre.", function()
+    local args = {
+        [1] = game:GetService("Players").LocalPlayer,
+        [2] = "Gris pierre moyen"
+    }
+    workspace.Remote.loadchar:InvokeServer(unpack(args))
+    args[1] = PlayerName
+    workspace.Remote.loadchar:InvokeServer(unpack(args))
+end)
+
+AdminSection:NewButton("Inf Yield", "Script d'administration Nice FE.", function()
+    loadstring(game:HttpGet('https://raw.githubusercontent.com/EdgeIY/infiniteyield/master/source'))()
+end)
+
+AdminSection:NewButton("Fates Admin", "L'un des meilleurs scripts d'administration FE.", function()
+    loadstring(game:HttpGet("https://raw.githubusercontent.com/fatesc/fates-admin/main/main.lua"))()
+end)
+
+UsefulSection:NewButton("DarkDex", "Vous permet de tout voir dans le jeu.", function()
+    loadstring(game:HttpGet("https://gist.githubusercontent.com/DinosaurXxX/b757fe011e7e600c0873f967fe427dc2/raw/ee5324771f017073fc30e640323ac2a9b3bfc550/dark%2520dex%2520v4"))()
+end)
+
+UsefulSection:NewButton("SimpleSpy", "Un incontournable pour créer des exploits Roblox.", function()
+    loadstring(game:HttpGet("https://github.com/exxtremestuffs/SimpleSpySource/raw/master/SimpleSpy.lua"))()
 end)
